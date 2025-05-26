@@ -11,13 +11,17 @@ class StockDate(models.Model):
         self.update_fecha()
         return res
 
+    def update_ubicacion_entrega(self):
+        for record in self:
+            ubicacion = self.env["stock.location"].search([("warehouse_id", "=", ), () ])
+
     def update_fecha(self):
         for record in self:
             if record.scheduled_date:
                 fecha_hoy = datetime.now().replace(second=0, microsecond=0)
                 scheduled = record.scheduled_date.replace(second=0, microsecond=0)
 
-                if fecha_hoy >= scheduled:
+                if fecha_hoy >= scheduled and record.state != "cancel":
                     record.scheduled_date = fecha_hoy + timedelta(hours=2)
                 else:
                     print("La fecha de hoy es menor a la fecha programada.")
@@ -26,3 +30,13 @@ class StockDate(models.Model):
         self.update_fecha()  # Actualiza antes de validar
         res = super(StockDate, self).button_validate()
         return res
+
+
+
+class Location(models.Model):
+    _inherit="stock.location"
+    _description="Movimientos de existencias"
+
+
+    
+    is_stock = fields.Boolean(string="¿Es una ubicacion de sotkc?")
