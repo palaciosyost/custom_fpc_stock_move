@@ -17,7 +17,7 @@ class StockDate(models.Model):
 
     def update_fecha(self):
         for record in self:
-            if record.scheduled_date:
+            if record.scheduled_date or record.state != "cancel" or record.picking_type_code != "done":
                 fecha_hoy = datetime.now().replace(second=0, microsecond=0)
                 scheduled = record.scheduled_date.replace(second=0, microsecond=0)
 
