@@ -5,7 +5,9 @@ from datetime import datetime, timedelta
 class StockDate(models.Model):
     _inherit = "stock.picking"
     _description = "Aumentar fecha programada de entrega automáticamente"
+    _order = "pe_guide_number desc"
 
+    
     def write(self, vals):
         res = super(StockDate, self).write(vals)
         self.update_fecha()
